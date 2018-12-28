@@ -56,30 +56,28 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
   <script>
-  // Step 1: add 'keydown' event handler to play the correct sound and show the transform effects when the user presses a key with audio attached
-    window.addEventListener('keydown', function(e) {
-    // listen to the window or document because it's a key event that happens on our keyboard
+  // Step 5: let's move the function details outside an event listener.
+    function playSound(e) {
       // console.log(e); -> use it to find out the right property, i.e. keyCode
       const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
       const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+      if (!audio) return; // nice work to learn: if the key down is not the right key, we just stop the function here. no need to go any further.
       key.classList.add('playing'); // Step 3: add animation. try it and you'll see we need to make a Step 4
       audio.currentTime = 0; // Step 2: in the case of continuous keydowns, make sure the sound plays nicely
       audio.play(); // use HTMLMediaElement.play()
-    });
-
-  // Step 4: after the effects end, make the key's styling back to normal
-  // we need to add event handlers to each key and here is a smart way to do it using forEach()
-  const keys = document.querySelectorAll('.key');
-  // console.log(keys); -> in the prototype of NodeList, we will find forEach good to use
-  keys.forEach(key => { key.addEventListener('transitionend', function(e) {
+    };
+    function removeTransition(e) {
       // console.log(e); -> we'll see more than one transition events. use it to find the property we can use
-      if(e.propertyName === 'transform') {
-        key.classList.remove('playing');
-      }
-    })
-  });
+      if (e.propertyName !== 'transform') return; // nice work to learn: we could use if(e.propertyName === 'transform') { key.classList.remove('playing'); } but it's not neat compared to this solution.
+      e.target.classList.remove('playing');
+    }
 
-  // Step 5: cool, it works. but is the code good enough? hints: two things can be improved. will do it in the next commit.
+    // Step 4: after the effects end, make the key's styling back to normal. We need to add event handlers to each key and here is a smart way to do it using forEach()
+    const keys = document.querySelectorAll('.key');
+    // console.log(keys); -> in the prototype of NodeList, we will find forEach available to use
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+    // Step 1: add 'keydown' event handler to play the correct sound and show the transform effects when the user presses a key with audio attached
+    window.addEventListener('keydown', playSound); // listen to the window or document because it's a key event that happens on our keyboard
   </script>
 
 </body>
