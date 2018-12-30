@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scoped CSS Variables and JS</title>
+</head>
+<body>
+  <h1>Update CSS Variables with <span class="highlight">JS</span></h1>
+
+  <div class="slide-container">
+    <label for="spacing">Spacing
+      <input type="range" name="spacing" min="0" max="100" value="10" data-sizing="px"> <!-- set the initial value the same as the CSS variable's initial value. otherwise, for example, when value is to 50, when mouseover, the event handler will be triggered and update the CSS variable to 50, which is not what we want. -->
+    </label>
+    <label for="brightness">Brightness
+      <input type="range" name="brightness" min="20" max="200" value="100" data-percentage="%">
+    </label>
+    <label for="base">Base Color
+      <input type="color" name="base" value="#E88C0C">
+    </label>
+  </div>
+
+  <img src="pexels-photo-1455964.jpeg">
+
+  <style>
+    :root {
+      --spacing: 10px;
+      --brightness: 100%;
+      --base: #E88C0C;
+    }
+
+    img {
+      padding: var(--spacing);
+      filter: brightness(var(--brightness));
+      background: var(--base);
+    }
+
+    .highlight {
+      color: var(--base);
+    }
+
+    /* misc styles. nothing to do with css variables */
+    html {
+      background-color: #3F657D;
+      color: #fff;
+      font-family: sans-serif;
+      line-height: 1.5;
+    }
+    body {
+      margin: 80px auto;
+      max-width: 900px;
+      text-align: center;
+    }
+    input[type=range] {
+      height: 11px;
+      border-radius: 5px;
+      outline: none;
+      opacity: 0.7;
+      transition: all .5s;
+      cursor: pointer;
+      margin-right: 20px;
+    }
+    input[type=range]:hover {
+      opacity: 1;
+    }
+    input[type=color] {
+      margin-left: 5px;
+      height: 20px;
+      width: 70px;
+      cursor: pointer;
+    }
+    img {
+      margin: 30px auto;
+      width: 80%;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  </style>
+
+  <script>
+    const inputs = document.querySelectorAll('input');
+
+    function updateRoot() {
+      const suffix = this.dataset.sizing ? this.dataset.sizing :
+                     this.dataset.percentage ? this.dataset.percentage :
+                     ''; // for better readability
+      document.documentElement.style.setProperty(`--${this.name}`, `${this.value}${suffix}`); // Document.documentElement returns the Element that is the root element of the document (for example, the <html> element for HTML documents). - MDN & // remember to add -- in front of the variable to make it a CSS variable.
+    };
+
+    inputs.forEach(input => input.addEventListener('change', updateRoot));
+    inputs.forEach(input => input.addEventListener('mousemove', updateRoot));
+  </script>
+
+</body>
+</html>
