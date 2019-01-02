@@ -1,1 +1,1 @@
-A playground to practice to learn frontend development.
+A playground with practices to learn frontend development.
