@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form>
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Search For A City</li>
+      <li>Or A State In The U.S.</li>
+    </ul>
+  </form>
+  <script>
+    // step 1: get the data - fetch an array from endpoint
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+    const cities = [];
+    fetch(endpoint)
+      .then(blob => blob.json()) // to learn promises
+      .then(data => cities.push(...data));
+
+    // step 2: get the data - return an array of matched results
+    function findMatches(userInput, cities) {
+      return cities.filter(item => {
+        // How do we assign a variable to a RegExp:
+        const regex = new RegExp(userInput, 'gi'); // you can combine the flags in any order, so 'ig' also works
+        return item.city.match(regex) || item.state.match(regex);
+        // The match() method retrieves the matches when matching a string against a regular expression.
+        // we can't use String.prototype.includes here because includes() method is case sensitive.
+      });
+    };
+
+    // step 3: create the functionality needed to create the HTML we need for display
+    function displayMatches() {
+      const matchedArray = findMatches(this.value, cities);
+      //console.log(matchedArray);
+      const regex = new RegExp(this.value, 'gi');
+      const html = matchedArray.map(item => {
+        // step 4: final tweaks on styling: highlight the matched words and put comma in population (-> alternative way: find a function and use tagged template literals like this: function numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');} and <span class="population">${numberWithCommas(place.population)}</span>
+        const city = item.city.replace(regex, `<span class="hl">${this.value}</span>`); // I also added "|| item.city" in the end which was not needed.
+        const state = item.state.replace(regex, `<span class="hl">${this.value}</span>`);
+        return `
+          <li>
+            <span>${city}, ${state}</span>
+            <span class="population">${parseInt(item.population).toLocaleString('en')}</span>
+          </li>
+        `; // readability
+      }).join('');
+      suggestions.innerHTML = html;
+    };
+
+    const input = document.querySelector('input');
+    const suggestions = document.querySelector('.suggestions');
+
+    input.addEventListener('change', displayMatches);
+    input.addEventListener('keyup', displayMatches);
+
+  </script>
+</body>
+</html>
