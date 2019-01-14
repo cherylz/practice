@@ -1,0 +1,59 @@
+html {
+  box-sizing: border-box;
+  background-color: #ffc600;
+  font-family: 'helvetica neue', sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  margin-top: 20px;
+  margin-left: 20px;
+  display: flex;
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+}
+
+.board-row {
+  display: flex;
+}
+
+.square {
+  height: 40px;
+  width: 40px;
+  border: 1px solid rgb(216, 216, 216);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: 0;
+}
+
+.notice-board {
+  display: flex;
+  flex-direction: column;
+  margin-left: 50px;
+  line-height: 1.8;
+}
+
+.status-text {
+  position: relative;
+  left: -30px;
+}
+
+.moves {
+  font-size: small;
+}
+
+button {
+  cursor: pointer;
+}
