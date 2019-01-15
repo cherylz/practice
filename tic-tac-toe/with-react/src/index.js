@@ -11,28 +11,31 @@ function Square(props) {
 }
 
 class Board extends React.Component {
+//  handleClick = (e) => {
+  //  this.props.onClick(e.target.value);
+//  }
+  // An alternative approach to handle the event:
+  /*
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(e) {
-    this.props.onClick(e.target.value);
+    this.props.onClick(e.target.value); // this `this` is the `this` we need to bind with the context `Board` to mean `Board`. The `this` inside `bind(this)` above means `Board`.
   }
+  */
 
   renderSquare(i) {
     return (
       <Square
         squareNumber={i}
         contentOnDisplay={this.props.squaresOnDisplay[i - 1]}
-        onClick={this.handleClick}
+        onClick={this.props.onClick}
       />
     )
   }
-// think: why don't we need to bind 'this' in the above function?
-// think: do we need a key for each button? got this question when using array.map to generate each row.
 
-// think: why do we need 'this' when call renderSquare() below?
   render() {
     return (
       <div className="game-board">
@@ -82,7 +85,6 @@ function Moves(props) {
       </li>
     )
   })
-    // think: assign the key to the list or to the button?
 
   return(
     <ol className="moves">
@@ -90,7 +92,6 @@ function Moves(props) {
     </ol>
   )
 }
-// Think: do we need to have a child component for each move?
 
 class Notice extends React.Component {
   constructor(props) {
@@ -130,7 +131,8 @@ class Game extends React.Component {
     this.jumpTo = this.jumpTo.bind(this);
   }
 
-  handleClick(squareNumber) {
+  handleClick(e) {
+    const squareNumber = e.target.value;
     const history = this.state.history;
     let stepOnDisplay = this.state.stepOnDisplay;
 
@@ -144,11 +146,11 @@ class Game extends React.Component {
     stepOnDisplay++;
     const current = history[stepOnDisplay - 1].slice();
     current[squareNumber - 1] = stepOnDisplay % 2 ? "X" : "O";
-    const rewrite = history.filter((step, index) => index < stepOnDisplay); // in case the user jumps to a previous step and plays from there
+    const rewrite = history.slice(0, stepOnDisplay); // an easy-to-omit case: the user jumps to a previous step and makes a new move from there. this ensures that if it happens, we throw away all the “future” history that would now become incorrect.
     rewrite.push(current);
 
     this.setState({
-      history: rewrite, // mistake-list: history: rewrite.push(current). didn't realize array.push would return the new length of the array
+      history: rewrite,
       stepOnDisplay: stepOnDisplay
     });
   }
@@ -207,5 +209,5 @@ function calculateWinner(squares) {
       return squares[a];
     }
   }
-  return null; // go to mistake-list: I had wrongly put this in the for loop.
+  return null;
 }
