@@ -11,11 +11,14 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-//  handleClick = (e) => {
-  //  this.props.onClick(e.target.value);
-//  }
-  // An alternative approach to handle the event:
-  /*
+  /* if we start to handle the click event in this component, we can do as follows. note that for both approaches, remember to update the handleClick function in the Game component.
+
+  handleClick = (e) => {
+    this.props.onClick(e.target.value);
+  }
+
+  // or:
+
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
